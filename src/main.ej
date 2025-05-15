@@ -1,0 +1,113 @@
+import "std"
+
+// Load project config
+@const(fs, require('node:fs'))
+
+javascript {
+    const {exec} = require('child_process');
+    const readline = require('node:readline');
+}
+
+@const(rl, readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+}))
+
+args = process.argv.slice(2, process.argv.length)
+
+async fn init() {
+    @print("Welcome to the EasyJS project manager")
+
+    fn get_input(msg, fallback) {
+        return new Promise(fn(resolve) {
+            rl.question(msg, fn(answer) {
+                if answer == "" or answer == null {
+                    resolve(fallback)
+                } else {
+                    resolve(answer)
+                }
+            })
+        })
+    }
+
+    name = await get_input("project name: ", "project")
+    author_name = await get_input("author name: ", "")
+    author_email = await get_input("author email: ", "")
+    runtime = await get_input("runtime: ", "node")
+
+    fs.writeFileSync('src/main.ej', "import 'std'\n@print('Hello from easyJS')\n")
+    fs.writeFileSync('$name.ejconfig', JSON.stringify({
+        name,
+        description: "A new easyjs package."
+        author: {
+            name: author_name,
+            email: author_email
+        },
+        source: 'src/main.ej',
+        final: '$name.js'
+        runtime
+    }, undefined, 4))
+}
+
+fn get_config() {
+    // Get the current config of the cwd and run the source
+    files = fs.readdirSync('./')
+    config = null
+    for file in files {
+        if file.endsWith('.ejconfig') {
+            config = JSON.parse(fs.readFileSync(file))
+            break
+        }
+    }
+
+    return config    
+}
+
+fn call_easyjs(command) {
+    exec(command, fn(error, stdout, stderr) {
+        if error {
+            @print('error executing program: ${error.message}')
+            process.exit(0)
+        }
+        if stderr != "" {
+            @print(stderr)
+        }
+        if stdout != "" {
+            @print(stdout)
+        }
+        process.exit(0)
+    })
+}
+
+if args.length == 0 {
+    config = get_config()
+    if config == null {
+        @print("No config found")
+        process.exit(1)
+    }
+
+    call_easyjs('easyjs run ${config.source} --runtime ${config.runtime}')
+}
+
+if args[0] == "init" {
+    // let's do some init
+    async {
+        await init()
+        process.exit(0)
+    }
+} elif args[0] == "test" {
+    @print("This worked!")
+} elif args[0] == "compile" {
+    config = get_config()
+    if config == null {
+        @print("No config found")
+        process.exit(1)
+    }
+
+    minify = ""
+    if args[1] == "minify" {
+        minify = "--minify"
+    }
+
+    call_easyjs('easyjs compile ${config.source} --output ${config.final} $minify')
+}

@@ -1,0 +1,11 @@
+{
+    "name": "easypkg",
+    "description": "A easyjs package manager written in easyjs.",
+    "author": {
+        "name": "Jordan Castro",
+        "email": "jordan@grupojvm.com"
+    },
+    "source": "src/main.ej",
+    "runtime": "node",
+    "final": "easypkg.js"
+}
