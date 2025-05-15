@@ -8,14 +8,15 @@ javascript {
     const readline = require('node:readline');
 }
 
-@const(rl, readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-}))
-
 args = process.argv.slice(2, process.argv.length)
 
 async fn init() {
+    
+    @const(rl, readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    }))
+
     @print("Welcome to the EasyJS project manager")
 
     fn get_input(msg, fallback) {
@@ -35,8 +36,15 @@ async fn init() {
     author_email = await get_input("author email: ", "")
     runtime = await get_input("runtime: ", "node")
 
-    fs.writeFileSync('src/main.ej', "import 'std'\n@print('Hello from easyJS')\n")
-    fs.writeFileSync('$name.ejconfig', JSON.stringify({
+    if !fs.existsSync(name) {
+        fs.mkdirSync(name)
+    }
+    if !fs.existsSync('$name/src') {
+        fs.mkdirSync('$name/src')
+    }
+
+    fs.writeFileSync('$name/src/main.ej', "import 'std'\n@print('Hello from easyJS')\n")
+    fs.writeFileSync('$name/$name.ejconfig', JSON.stringify({
         name,
         description: "A new easyjs package."
         author: {
@@ -47,6 +55,7 @@ async fn init() {
         final: '$name.js'
         runtime
     }, undefined, 4))
+    rl.close()
 }
 
 fn get_config() {
