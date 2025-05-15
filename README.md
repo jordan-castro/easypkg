@@ -3,7 +3,7 @@ A easyjs package manager written in easyjs.
 
 ## Installing
 ```bash
-easyjs install https://raw.githubusercontent.com/jordan-castro/easypkg/refs/heads/master/easypkg.js
+easyjs install https://github.com/jordan-castro/easypkg
 ```
 
 Then to use easypkg just run `init`
