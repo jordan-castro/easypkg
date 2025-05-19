@@ -10,6 +10,32 @@ javascript {
 
 args = process.argv.slice(2, process.argv.length)
 
+macro kill(code) {
+    process.exit(#code)
+}
+
+@const(help, "
+ezpkg - EasyJS Package Manager
+
+Usage:
+    ezpkg <command> [options]
+
+Commands:
+    init             Create a new EasyJS project interactively.
+    run              Run the main source file defined in the project config.
+    compile          Compile the project source file into JavaScript.
+        minify       (Optional) Minify the compiled output.
+
+Options:
+    --help           Show this help message.
+    --version        Show the current version of ezpkg.
+
+Example:
+    ezpkg init
+    ezpkg compile minify
+    ezpkg run
+")
+
 async fn init() {
     
     @const(rl, readline.createInterface({
@@ -84,25 +110,30 @@ fn call_easyjs(command) {
         if stdout != "" {
             @print(stdout)
         }
-        process.exit(0)
+        @kill(0)
     })
 }
 
 if args.length == 0 {
-    config = get_config()
-    if config == null {
-        @print("No config found")
-        process.exit(1)
-    }
+    @print(help)
+    @kill(0)
+}
 
-    call_easyjs('easyjs run ${config.source} --runtime ${config.runtime}')
+if args[0] == "--help" {
+    @print(help)
+    @kill(0)
+}
+
+if args[0] == "--version" {
+    @print("0.0.1")
+    @kill(0)
 }
 
 if args[0] == "init" {
     // let's do some init
     async {
         await init()
-        process.exit(0)
+        @kill(0)
     }
 } elif args[0] == "test" {
     @print("This worked!")
@@ -110,7 +141,7 @@ if args[0] == "init" {
     config = get_config()
     if config == null {
         @print("No config found")
-        process.exit(1)
+        @kill(1)
     }
 
     minify = ""
@@ -119,4 +150,12 @@ if args[0] == "init" {
     }
 
     call_easyjs('easyjs compile ${config.source} --output ${config.output} $minify')
+} elif args[0] == "run" {
+    config = get_config()
+    if config == null {
+        @print("No config found")
+        @kill(1)
+    }
+
+    call_easyjs('easyjs run ${config.source} --runtime ${config.runtime}')
 }

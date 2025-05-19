@@ -1,5 +1,5 @@
 {
-    "name": "easypkg",
+    "name": "ezpkg",
     "description": "A easyjs package manager written in easyjs.",
     "author": {
         "name": "Jordan Castro",
@@ -7,5 +7,5 @@
     },
     "source": "src/main.ej",
     "runtime": "node",
-    "output": "easypkg.js"
+    "output": "ezpkg.js"
 }
