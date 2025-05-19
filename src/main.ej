@@ -52,7 +52,7 @@ async fn init() {
             email: author_email
         },
         source: 'src/main.ej',
-        final: '$name.js'
+        output: '$name.js'
         runtime
     }, undefined, 4))
     rl.close()
@@ -118,5 +118,5 @@ if args[0] == "init" {
         minify = "--minify"
     }
 
-    call_easyjs('easyjs compile ${config.source} --output ${config.final} $minify')
+    call_easyjs('easyjs compile ${config.source} --output ${config.output} $minify')
 }

@@ -7,5 +7,5 @@
     },
     "source": "src/main.ej",
     "runtime": "node",
-    "final": "easypkg.js"
+    "output": "easypkg.js"
 }
