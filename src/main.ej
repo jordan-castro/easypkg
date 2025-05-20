@@ -1,4 +1,7 @@
 import "std"
+import "src/add.ej"
+
+import "going_up"
 
 // Load project config
 @const(fs, require('node:fs'))
@@ -70,16 +73,17 @@ async fn init() {
     }
 
     fs.writeFileSync('$name/src/main.ej', "import 'std'\n@print('Hello from easyJS')\n")
-    fs.writeFileSync('$name/$name.ejconfig', JSON.stringify({
+    fs.writeFileSync('$name/pkg.ejconfig', JSON.stringify({
         name,
-        description: "A new easyjs package."
+        description: "A new easyjs package.",
         author: {
             name: author_name,
             email: author_email
         },
         source: 'src/main.ej',
-        output: '$name.js'
-        runtime
+        output: '$name.js',
+        runtime,
+        global: false
     }, undefined, 4))
     rl.close()
 }
@@ -158,4 +162,12 @@ if args[0] == "init" {
     }
 
     call_easyjs('easyjs run ${config.source} --runtime ${config.runtime}')
+} elif args[0] == "add" {
+    // We have to add a easyjs package! Que locura loco
+    // get current directory
+    cdir = get_cwd()
+
+    @print(cdir)
+    
+    call_easyjs('easyjs install ${args[1]} --forced-dir $cdir/packages/')
 }

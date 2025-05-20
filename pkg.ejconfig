@@ -7,5 +7,6 @@
     },
     "source": "src/main.ej",
     "runtime": "node",
-    "output": "ezpkg.js"
+    "output": "ezpkg.js",
+    "global": true
 }

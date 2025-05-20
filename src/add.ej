@@ -1,0 +1,16 @@
+// Add a easyjs package
+
+import "std"
+
+fn get_cwd() {
+    @const(file, __filename)
+
+    result = file
+    javascript {
+        result = result.replaceAll("\\", "/");
+    }
+    result = result.split("/")
+    result = result.splice(0, result.length - 1)
+
+    return result.join('/')
+}
